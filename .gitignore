@@ -10,12 +10,12 @@ $RECYCLE.BIN/
 
 /Debug/*
 /x64/*
-.dll
-.png
-.txt
-.vcxproj
-.vcxproj.filters
-.jpg
+*.dll
+*.png
+*.txt
+*.vcxproj
+*.vcxproj.filters
+*.jpg
 
 # Windows Installer files
 *.cab
