@@ -12,6 +12,9 @@ using glm::vec4;
 using std::vector;
 using glm::mix;
 
+#define c_Side 1
+#define c_Corner 2
+
 class Chunk {
 	vec3 UL, UR, BL, BR;
 	vector <Chunk> sides;
@@ -23,6 +26,7 @@ public:
 	~Chunk ();
 
 	vector <vec3> &getData () { return data; }
+	void operator () (Chunk c, int type);
 };
 
 #endif

@@ -20,3 +20,10 @@ Chunk::~Chunk () {
 	sides.clear ();
 	corners.clear ();
 }
+
+void Chunk::operator() (Chunk c, int type) {
+	if (type == c_Side) {
+		sides.push_back (c);
+	}
+	else corners.push_back (c);
+}

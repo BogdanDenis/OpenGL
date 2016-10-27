@@ -18,6 +18,7 @@
 #define CAMERAX camera.getPosition ().x
 #define CAMERAY camera.getPosition ().y
 #define CAMERAZ camera.getPosition ().z
+#define CAMERAPOS camera.getPosition ();
 
 using namespace std;
 using namespace glm;
@@ -38,7 +39,6 @@ vec3 objColour (0.690, 0.882, 0.337);
 vec3 lightPosition (0.0f, -10.0f, 0.0f);
 vec3 quadPos (0.0f, 0.0f, 0.0f);
 vec3 spherePos (100.0f, 500.0f, 100.0f);
-vec3 plainPos (-150.0f, -10.0f, -150.0f);
 
 void key_callback (GLFWwindow *window, int key, int scancode, int action, int mode);
 void mouse_callback (GLFWwindow* window, double xpos, double ypos);
@@ -175,38 +175,26 @@ int main (int argc, char** argv) {
 	data.reserve (1000000);
 	GLfloat plainw, plaind;
 	GLfloat delta = 1000.0;
-	plainw = plaind = 15 * delta;
+	plainw = plaind = 10 * delta;
 
 	srand (time (NULL));
 
 	GLfloat a = glfwGetTime ();
 	vector <Chunk> chunks;
 
-	//for (GLfloat x = -plainw / 2; x < plainw / 2; x += delta) {
-	//	for (GLfloat z = -plaind / 2; z < plaind / 2; z += delta) {
-	//		//Chunk c (vec3 (x, 0.0, z), vec3 (x + delta, 0.0, z),
-	//			//vec3 (x, 0.0, z + delta), vec3 (x + delta, 0.0, z + delta));
-	//		//chunks.push_back (c); 
-	//		data.push_back (vec3 (x, 0.0, z));
-	//		data.push_back (vec3 (x, 0.0, z + delta));
-	//		data.push_back (vec3 (x + delta, 0.0, z + delta));
-	//		data.push_back (vec3 (x + delta, 0.0, z));
-	//	}
-	//}
-	for (GLfloat x = -plainw / 2; x < plainw / 2; x += delta) {
-		for (GLfloat z = -plaind / 2; z < plaind / 2; z += delta) {
+	for (GLfloat x = CAMERAX - plainw / 2; x < CAMERAX + plainw / 2; x += delta) {
+		for (GLfloat z = CAMERAZ -plaind / 2; z < CAMERAZ + plaind / 2; z += delta) {
 			Chunk c (vec3 (x, 0.0, z), vec3 (x + delta, 0.0, z),
 				vec3 (x, 0.0, z + delta), vec3 (x + delta, 0.0, z + delta));
 			chunks.push_back (c);
 		}
 	}
 
-	for each (Chunk c in chunks) {	
+	for each (Chunk c in chunks)
 		for each (vec3 v in c.getData ()) {
 			data.push_back (v);
 		}
-	}
-
+	
 	printf ("Time :%f\n", glfwGetTime () - a);
 
 	Terrain terrain;
