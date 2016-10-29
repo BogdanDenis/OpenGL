@@ -23,6 +23,7 @@ using namespace std;
 using namespace glm;
 
 bool keys[1024];
+bool Vsync = false;
 GLfloat lastX;
 GLfloat lastY;
 GLfloat viewDist = 1000.0;
@@ -46,13 +47,24 @@ void do_movement (Camera &camera, GLfloat deltaTime);
 
 Camera camera;
 
+typedef BOOL (APIENTRY *PFNWGLSWAPINTERVALFARPROC)(int);
+PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT = 0;
+
+void setVSync () {
+	wglSwapIntervalEXT = (PFNWGLSWAPINTERVALFARPROC)wglGetProcAddress ("wglSwapIntervalEXT");
+
+	if (wglSwapIntervalEXT)
+		wglSwapIntervalEXT (Vsync);
+	Vsync ? Vsync = false : Vsync = true;
+};
+
 
 int main (int argc, char** argv) {
 	GLFWwindow *window;
 	if (InitOpenGL (window, width, height, 3, 4)) {
 		printf ("Failed to initialize OpenGL!");
 	}
-
+	setVSync ();
 
 	//CREATE SHADER PROGRAM
 	ShaderProgram shaderProgram ("VertexShader.txt", "FragmentShader.txt");
@@ -61,8 +73,6 @@ int main (int argc, char** argv) {
 	sphere.AttachShader (GL_TESS_CONTROL_SHADER, "terrainShader.tessCont");
 	sphere.AttachShader (GL_TESS_EVALUATION_SHADER, "terrainShader.tessEval");
 	//sphere.AttachShader (GL_GEOMETRY_SHADER, "terrainShader.geom");
-
-
 	//DEFINE VERTICES
 
 	GLfloat vertices[] = {
@@ -359,6 +369,9 @@ void key_callback (GLFWwindow *window, int key, int scancode, int action, int mo
 }
 void do_movement (Camera &camera, GLfloat deltaTime) {
 	GLfloat cameraSpeed = 5.0f * deltaTime;
+	if (keys[GLFW_KEY_F1]) {
+		setVSync ();
+	}
 	if (keys[GLFW_KEY_RIGHT_BRACKET])
 		cameraSpeed *= 2;
 	if (keys[GLFW_KEY_LEFT_BRACKET])

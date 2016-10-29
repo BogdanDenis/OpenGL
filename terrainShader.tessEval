@@ -6,9 +6,6 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 model;
 
-patch in vec3 Normals[63 * 63];
-
-
 //out Data {
 	out vec3 Normal;
 	out vec3 fragPos;
