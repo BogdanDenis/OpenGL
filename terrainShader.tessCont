@@ -7,6 +7,8 @@ uniform mat4 model;
 uniform mat4 view_projection;
 uniform float viewDist;
 
+patch out vec3 Normals[63 * 63];
+
 
 float max4 (float x1, float x2, float x3, float x4) {
 	float max1 = max (x1, x2);
@@ -105,6 +107,12 @@ float sumOctaves (int octaves, float x, float z, float persistence, float scale,
 	return noise;
 }
 
+vec3 triNorm (vec3 v1, vec3 v2, vec3 v3) {
+	vec3 v = v1 - v3;
+	vec3 w = v2 - v3;
+	return normalize (cross (v, w));
+}
+
 int level (vec3 d1, vec3 d2, vec3 d3, vec3 d4, vec3 centre) {
 	float low;
 	float diam = distance (d1, d2);
@@ -150,12 +158,16 @@ void main () {
 		vec3 centre = (d1 + d2 + d3 + d4) / 4;
 
 		if (!onScreen (centre, view_projection * model)) {
-			gl_TessLevelInner[0] = level (d1, d2, d3, d4, centre);
-			gl_TessLevelInner[1] = level (d1, d2, d3, d4, centre);	
-			gl_TessLevelOuter[0] = level (d1, d2, d3, d4, centre);
-			gl_TessLevelOuter[1] = level (d1, d2, d3, d4, centre);
-			gl_TessLevelOuter[2] = level (d1, d2, d3, d4, centre);
-			gl_TessLevelOuter[3] = level (d1, d2, d3, d4, centre);
+			int Level = level (d1, d2, d3, d4, centre);
+			gl_TessLevelInner[0] = Level;
+			gl_TessLevelInner[1] = Level;	
+			gl_TessLevelOuter[0] = Level;
+			gl_TessLevelOuter[1] = Level;
+			gl_TessLevelOuter[2] = Level;
+			gl_TessLevelOuter[3] = Level;
+
+
+
 		}
 		else {
 			gl_TessLevelInner[0] = gl_TessLevelInner[1] = gl_TessLevelOuter[0] = 
