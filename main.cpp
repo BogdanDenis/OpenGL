@@ -18,7 +18,7 @@
 #define CAMERAX camera.getPosition ().x
 #define CAMERAY camera.getPosition ().y
 #define CAMERAZ camera.getPosition ().z
-#define CAMERAPOS camera.getPosition ();
+#define CAMERAPOS camera.getPosition ()
 
 using namespace std;
 using namespace glm;
