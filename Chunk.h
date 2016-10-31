@@ -26,6 +26,9 @@ public:
 	~Chunk ();
 
 	vector <vec3> &getData () { return data; }
+
+	bool ChunkInClip (mat4 MVP);
+	bool VertexInClip (mat4 MVP, vec3 p);
 	void operator () (Chunk c, int type);
 };
 

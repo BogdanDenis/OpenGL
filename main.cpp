@@ -12,7 +12,6 @@
 #include "Camera.h"
 #include "Sphere.h"
 #include "OpenGLInit.h"
-#include "Chunk.h"
 #include "Terrain.h"
 
 #define CAMERAX camera.getPosition ().x
@@ -183,37 +182,16 @@ int main (int argc, char** argv) {
 	
 	vector <vec3> data;
 	data.reserve (1000000);
-	GLfloat plainw, plaind;
-	GLfloat delta = 1000.0;
-	plainw = plaind = 10 * delta;
 
 	srand (time (NULL));
 
 	GLfloat a = glfwGetTime ();
-	vector <Chunk> chunks;
-
-	for (GLfloat x = CAMERAX - plainw / 2; x < CAMERAX + plainw / 2; x += delta) {
-		for (GLfloat z = CAMERAZ -plaind / 2; z < CAMERAZ + plaind / 2; z += delta) {
-			Chunk c (vec3 (x, 0.0, z), vec3 (x + delta, 0.0, z),
-				vec3 (x, 0.0, z + delta), vec3 (x + delta, 0.0, z + delta));
-			chunks.push_back (c);
-		}
-	}
-
-	for each (Chunk c in chunks)
-		for each (vec3 v in c.getData ()) {
-			data.push_back (v);
-		}
 	
 	printf ("Time :%f\n", glfwGetTime () - a);
 
 	Terrain terrain;
 
 	glBindVertexArray (VAO);
-	glBindBuffer (GL_ARRAY_BUFFER, VBO);
-	glBufferData (GL_ARRAY_BUFFER, data.size () * sizeof (vec3), &data[0], GL_STATIC_DRAW);
-	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof (GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray (0);
 	glBindBuffer (GL_ARRAY_BUFFER, sphereVBO);
 	glBufferData (GL_ARRAY_BUFFER, sphereObj.getData ()->size () * sizeof (vec3), &(*sphereObj.getDataEl (0)), GL_STATIC_DRAW);
 	glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof (GLfloat), (GLvoid*)0);
@@ -231,6 +209,8 @@ int main (int argc, char** argv) {
 
 	do {
 		do_movement (camera, deltaTime);
+		data.clear ();
+		data.reserve (1000000);
 		//terrain.Traverse (terrain.baseQuad ());
 		//vector <vec3> terdata;
 		//terdata.reserve (1000000);
@@ -305,9 +285,17 @@ int main (int argc, char** argv) {
 
 
 		glPatchParameteri (GL_PATCH_VERTICES, 4);
+		terrain.BuildVertexData (data, projection * view * model);
 		glBindVertexArray (VAO);
 		glBindBuffer (GL_ARRAY_BUFFER, VBO);
+		if (data.size ()) {
+			glBufferData (GL_ARRAY_BUFFER, data.size () * sizeof (vec3), &data[0], GL_DYNAMIC_DRAW);
+			printf ("Size :%d\n", data.size ());
+		}
+		glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof (GLfloat), (GLvoid*)0);
+		glEnableVertexAttribArray (0);
 		glDrawArrays (GL_PATCHES, 0, data.size ());
+		glBindVertexArray (0);
 
 
 		glUseProgram (sun.getShaderProgramID ());
