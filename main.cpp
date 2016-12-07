@@ -181,7 +181,6 @@ int main (int argc, char** argv) {
 	glfwSetCursorPosCallback (window, mouse_callback);
 	
 	vector <vec3> data;
-	data.reserve (1000000);
 
 	srand (time (NULL));
 
@@ -285,7 +284,10 @@ int main (int argc, char** argv) {
 
 
 		glPatchParameteri (GL_PATCH_VERTICES, 4);
-		terrain.BuildVertexData (data, projection * view * model);
+		GLfloat b = glfwGetTime ();
+		//terrain.BuildVertexData (data, projection * view * model);
+		terrain.BuildVertexData (data, viewAngle, camera.getFront ());
+		printf ("VERTEX TIME: %f\n", glfwGetTime () - b);
 		glBindVertexArray (VAO);
 		glBindBuffer (GL_ARRAY_BUFFER, VBO);
 		if (data.size ()) {
@@ -296,7 +298,6 @@ int main (int argc, char** argv) {
 		glEnableVertexAttribArray (0);
 		glDrawArrays (GL_PATCHES, 0, data.size ());
 		glBindVertexArray (0);
-
 
 		glUseProgram (sun.getShaderProgramID ());
 		modelLoc = glGetUniformLocation (sun.getShaderProgramID (), "model");

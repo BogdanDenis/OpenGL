@@ -6,9 +6,13 @@
 #include <GL/freeglut.h>
 #include <fstream>
 
+#include <iostream>
+
+using std::cerr;
+using std::endl;
 
 int InitOpenGL (GLFWwindow *&window, int width, int height, int version_minor, int version_major) {
-
+	GLenum err;
 	if (!glfwInit ()) {
 		fprintf (stderr, "Failed to initialize GLFW!\n");
 		return 1;
@@ -30,6 +34,9 @@ int InitOpenGL (GLFWwindow *&window, int width, int height, int version_minor, i
 	if (glewInit ()) {
 		fprintf (stderr, "Failed to initialize GLEW!\n");
 		return 3;
+	}
+	while ((err = glGetError ()) != GL_NO_ERROR) {
+		cerr << "OpenGL error: " << err << endl;
 	}
 	glfwSetInputMode (window, GLFW_STICKY_KEYS, GL_TRUE);
 	glfwGetFramebufferSize (window, &width, &height);

@@ -21,13 +21,13 @@ Terrain::~Terrain () {
 void Terrain::BuildVertexData (vector <vec3> &data, mat4 MVP) {
 	for each (Chunk c in chunks) {
 		if (c.ChunkInClip (MVP)) {
-			for each (vec3 v in c.getData ())
-				data.push_back (v);
+			data += c.getData ();
 		}
-		else {
-			for each (vec3 v in c.getData ())
-				if (c.VertexInClip (MVP, v))
-					data.push_back (v);
-		}
+	}
+}
+
+void Terrain::BuildVertexData (vector <vec3> &data, float viewAngle, vec3 cameraFront) {
+	for each (Chunk c in chunks) {
+		data += c.getData ();
 	}
 }

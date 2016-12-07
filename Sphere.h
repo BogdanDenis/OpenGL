@@ -19,7 +19,6 @@
 
 #include "MyVertexMath.h"
 #include "QuadTree.h"
-#include "simplexnoise.h"
 
 using std::vector;
 using glm::vec3;
